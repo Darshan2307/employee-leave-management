@@ -16,18 +16,30 @@
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Employee ID</th>
+                <th>Sr no</th>
                 <th>Name</th>
                 <th>Contact No</th>
                 <th>Email</th>
-                <th>Department</th>
                 <th>Role</th>
                 <th>Gender</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <!-- Data rows go here -->
+              @for (item of employeeList; track $index) {
+                <tr>
+                    <td>{{$index+1}}</td>
+                    <td>{{item.employeeName}}</td>
+                    <td>{{item.contactNo}}</td>
+                    <td>{{item.emailId}}</td>
+                    <td>{{item.role}}</td>
+                    <td>{{item.gender}}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-sm" (click)="onEdit(item)">Edit</button>
+                        <button type="button" class="btn btn-danger btn-sm" (click)="onDelete(item.employeeId)">Delete</button>
+                    </td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
@@ -86,27 +98,32 @@
                 />
               </div>
               <div class="col-md-6">
-                <label for="deptId" class="form-label">Parent Department</label>
+                <label for="parentDeptId" class="form-label">Parent Department</label>
                 <select
-                  id="deptId"
-                  name=""
-                  [(ngModel)]="employeeObj"
+                  id="parentDeptId"
+                  name="parentDeptId"
+                  (change)="onDeptChange()"
+                  [(ngModel)]="parentDeptId"
                   class="form-select"
                 >
                   <option selected>Select department</option>
-                  <!-- Department options -->
+                  @for (item of parentDepartmentList; track $index) {
+                    <option [value]="item.departmentId">{{item.departmentName}}</option>
+                  }
                 </select>
               </div>
               <div class="col-md-6">
                 <label for="deptId" class="form-label">Child Department</label>
                 <select
                   id="deptId"
-                  name=""
-                  [(ngModel)]="employeeObj"
+                  name="deptId"
+                  [(ngModel)]="employeeObj.deptId"
                   class="form-select"
                 >
                   <option selected>Select department</option>
-                  <!-- Department options -->
+                  @for (item of childDepartmentList; track $index) {
+                    <option [value]="item.childDeptId">{{item.departmentName}}</option>
+                  }
                 </select>
               </div>
             </div>
@@ -123,19 +140,6 @@
                 />
               </div>
               <div class="col-md-6">
-                <label for="role" class="form-label">Role</label>
-                <input
-                  type="text"
-                  name="role"
-                  [(ngModel)]="employeeObj.role"
-                  class="form-control"
-                  id="role"
-                  placeholder="Enter role"
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
                 <label for="gender" class="form-label">Gender</label>
                 <select
                   id="gender"
@@ -150,7 +154,12 @@
                 </select>
               </div>
             </div>
-            <button type="submit" class="btn btn-warning mt-3">Submit</button>
+            @if (employeeObj.employeeId == 0) {
+                <button type="button" (click)="onSaveEmployee()" class="btn btn-warning mt-3">Save Employee</button>
+            }
+            @else {
+                <button type="button" (click)="onUpdateEmployee()" class="btn btn-success mt-3">Update Employee</button>
+            }   
           </form>
         </div>
       </div>

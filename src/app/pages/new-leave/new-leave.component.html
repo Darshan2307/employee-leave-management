@@ -1,1 +1,128 @@
-<p>new-leave works!</p>
+<div class="container-fluid my-4">
+    <div class="row">
+        <div class="col-7">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <div class="row">
+                        <div class="col-6 text-white">
+                            <strong>Leave Portal</strong> 
+                        </div>
+                        <div class="col-6 text-end">
+                            <button class="btn btn-warning">Add New</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    @for (item of requestList; track $index) {
+                        <div class="col-md-4"  >
+                            <div class="card mb-4">
+                              <div class="card-header d-flex justify-content-between align-items-center">
+                              
+                                <span><strong>{{item.employeeName}}</strong>   </span>
+                              </div>
+                              <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Start Date:</strong>   {{item.startDate |date:'dd-MMM-yy'}}
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>End Date:</strong>   {{item.endDate |date:'dd-MMM-yy'}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Status:</strong>   {{item.status}}
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Type:</strong>   {{item.typeName}}
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="card-footer text-end">
+                                @if (masterSrv.loggedUserData.role == "Admin") {
+                                    <button class="btn btn-success btn-sm" (click)="changeStatus(item.leaveId)" >Approve</button>
+                                } @else {
+                                    <button class="btn btn-primary btn-sm me-2" >Edit</button>
+                                    <button class="btn btn-danger btn-sm" >Cancel</button>
+                                }
+                                
+                              </div>
+                            </div>
+                          </div>
+                    }
+                    
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <div class="row">
+                        <div class="col-6 text-white">
+                            <strong>New Leave Request</strong> 
+                        </div>
+                        <div class="col-6 text-end">
+                            <button class="btn btn-primary">Close</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                  <form id="leaveRequestForm" [formGroup]="leaveForm">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="employeeId">Employee ID</label>
+                          <select class="form-select" formControlName="employeeId" name="" id="">
+                            <option value="">Select Employee</option>
+                            @for (item of employee$ | async; track $index) {
+                                <option [value]="item.employeeId">{{item.employeeName}}</option>
+                              }
+                          </select>
+                           
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="leaveTypeId">Select Leave Type </label>
+                          <select class="form-select" formControlName="leaveTypeId" name="" id="">
+                            <option value="">Select Leave Type</option>
+                            @for (item of leaveTypeList(); track $index) {
+                                <option [value]="item.leaveTypeId">{{item.typeName}}</option>
+                            }
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="startDate">Start Date</label>
+                          <input type="date" formControlName="startDate" class="form-control" id="startDate">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="endDate">End Date</label>
+                          <input type="date" formControlName="endDate" class="form-control" id="endDate">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="reason">Reason</label>
+                          <textarea class="form-control" formControlName="reason" id="reason" rows="3" placeholder="Enter reason for leave"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                
+                    <button type="button" (click)="onSave()" class="btn btn-primary mt-2">Submit</button>
+                  </form>
+                </div>
+            </div>
+        </div>
+    </div>
